@@ -8,6 +8,7 @@ defmodule GallformersWeb.E2E.ReclassifyTest do
   use GallformersWeb.E2ECase
 
   import Ecto.Query
+  import Fluffy.Locator, only: [by_css: 1]
 
   alias Gallformers.Repo
 
@@ -158,7 +159,7 @@ defmodule GallformersWeb.E2E.ReclassifyTest do
     })()
     """
 
-    conn |> evaluate(js)
+    Fluffy.Playwright.evaluate(conn, js)
 
     :timer.sleep(500)
     conn
@@ -171,7 +172,7 @@ defmodule GallformersWeb.E2E.ReclassifyTest do
     |> push_to_component("reclassify_clear_family")
     |> push_to_component("reclassify_search_family", %{value: family_name})
     |> assert_has("#reclassify-family-picker-results")
-    |> click("#reclassify-family-picker-results button")
+    |> Fluffy.click(by_css("#reclassify-family-picker-results button"))
     # Wait for LiveView to process the selection before proceeding
     |> assert_has("#reclassify-family-picker-selected")
   end
@@ -183,7 +184,7 @@ defmodule GallformersWeb.E2E.ReclassifyTest do
     |> push_to_component("reclassify_clear_genus")
     |> push_to_component("reclassify_search_genus", %{value: genus_name})
     |> assert_has("#reclassify-genus-picker-results")
-    |> click("#reclassify-genus-picker-results button")
+    |> Fluffy.click(by_css("#reclassify-genus-picker-results button"))
     # Wait for LiveView to process the selection before proceeding
     |> assert_has("#reclassify-genus-picker-selected")
   end
@@ -195,18 +196,12 @@ defmodule GallformersWeb.E2E.ReclassifyTest do
 
   # Click the Save button in the reclassify modal.
   defp click_reclassify_save(conn) do
-    conn
-    |> click("#reclassify-modal button", "Save")
+    click_button(conn, "#reclassify-modal button", "Save")
   end
 
   # Click the Cancel button in the reclassify modal.
   defp click_reclassify_cancel(conn) do
-    conn
-    |> click("#reclassify-modal button", "Cancel")
-
-    # Give time for the modal to animate out
-    :timer.sleep(300)
-    conn
+    click_button(conn, "#reclassify-modal button", "Cancel")
   end
 
   # ──────────────────────────────────────────────────────────────────
